@@ -5,9 +5,14 @@ type MessageCategory string
 // Message categories
 const SIGNAL MessageCategory = "SIGNAL"
 const ID MessageCategory = "ID"
-const TEXT_MESSAGE MessageCategory = "TEXT"
+const CHAT MessageCategory = "CHAT"
 
-type Chat struct {
+// Signal connection messages
+const NEW_CONNECTION_SIGNAL string = "NEW_CONNECTION_SIGNAL"
+const CONNECTED_SIGNAL string = "CONNECTED_SIGNAL"
+const DISCONNECTED_SIGNAL string = "DISCONNECTED_SIGNAL"
+
+type Message struct {
 	To          string          `json:"to"`
 	MessageType MessageCategory `json:"messageType"`
 	Content     string          `json:"content"`

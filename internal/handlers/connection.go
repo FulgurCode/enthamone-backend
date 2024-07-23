@@ -11,7 +11,7 @@ import (
 func HandleConnection(c *websocket.Conn) {
 	// Generate id and send to client
 	var id string = uuid.NewString()
-	var msg = message.Chat{
+	var msg = message.Message{
 		To:          id,
 		MessageType: message.ID,
 		Content:     id,
@@ -22,5 +22,6 @@ func HandleConnection(c *websocket.Conn) {
 	}
 
 	// Create new client
-	ws.NewClient(c,id)
+	var client = ws.NewClient(c,id)
+	client.ListenMsg()
 }
