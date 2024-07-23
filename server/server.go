@@ -17,7 +17,7 @@ func Run(port string) {
 		return fiber.ErrUpgradeRequired
 	})
 
-	app.Get("/start", websocket.New(handlers.HandleConnection))
+	app.Get("/ws/start", websocket.New(handlers.HandleConnection))
 
 	app.Listen(":" + port)
 }
