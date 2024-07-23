@@ -14,6 +14,7 @@ const DISCONNECTED_SIGNAL string = "DISCONNECTED_SIGNAL"
 
 type Message struct {
 	To          string          `json:"to"`
+	Category    string          `json:"category,omitempty"`
 	MessageType MessageCategory `json:"messageType"`
 	Content     string          `json:"content"`
 }

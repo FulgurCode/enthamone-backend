@@ -23,6 +23,7 @@ func HandleConnection(c *websocket.Conn) {
 
 	// Create new client
 	var client = ws.NewClient(c,id)
-	go client.ListenMsg()
-	client.WriteMsg()
+	go client.WriteMsg()
+	client.NewConnection()
+	client.ListenMsg()
 }
