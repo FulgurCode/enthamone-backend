@@ -16,8 +16,10 @@ type Client struct {
 
 func NewClient(conn *websocket.Conn, id string) *Client {
 	var c = Client{
-		Conn:      conn,
-		Connected: false,
+		Conn:        conn,
+		Connected:   false,
+		MessageChan: make(chan message.Message),
+		UnRegister:  make(chan bool),
 	}
 
 	Clients[id] = &c

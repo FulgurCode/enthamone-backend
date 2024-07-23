@@ -20,9 +20,25 @@ func (c *Client) ListenMsg() {
 		}
 
 		if msg.MessageType == message.CHAT {
-			if client,exist := Clients[msg.To]; exist {
+			if client, exist := Clients[msg.To]; exist {
 				client.MessageChan <- msg
 			}
+		}
+	}
+}
+
+// Send message to client
+func (c *Client) WriteMsg() {
+	for {
+		select {
+		case msg := <-c.MessageChan:
+			var err = c.Conn.WriteJSON(msg)
+			if err != nil {
+				return
+			}
+		case _ = <-c.UnRegister:
+			c.Conn.Close()
+			return
 		}
 	}
 }
