@@ -8,15 +8,17 @@ import (
 )
 
 var Clients map[string]*Client = map[string]*Client{}
-var mu sync.Mutex
 
 type Client struct {
 	Id             string
 	Conn           *websocket.Conn
 	LookingConn    bool
+	ConnectedUser  string
 	MessageChan    chan message.Message
 	UnRegister     chan bool
-	ConnectionChan chan string
+	ConnectChan    chan string
+	DisconnectChan chan bool
+	mu             sync.Mutex
 }
 
 func NewClient(conn *websocket.Conn, id string) *Client {
@@ -26,7 +28,8 @@ func NewClient(conn *websocket.Conn, id string) *Client {
 		LookingConn:    true,
 		MessageChan:    make(chan message.Message),
 		UnRegister:     make(chan bool),
-		ConnectionChan: make(chan string),
+		ConnectChan:    make(chan string),
+		DisconnectChan: make(chan bool),
 	}
 
 	Clients[id] = &c
@@ -41,25 +44,11 @@ func (c *Client) NewConnection() {
 			continue
 		}
 
-		if c.LookingConn {
-			mu.Lock()
-			c.LookingConn = true
-			client.LookingConn = true
-			// Sending connected id client id
-			var msg = message.Message{
-				To:          c.Id,
-				MessageType: message.SIGNAL,
-				Category:    message.CONNECTED_SIGNAL,
-				Content:     id,
-			}
-
-			c.MessageChan <- msg
-			msg.To = id
-
-			msg.Content = c.Id
-			client.MessageChan <- msg
-
-			mu.Unlock()
+		if client.LookingConn {
+			c.mu.Lock()
+			client.mu.Lock()
+			client.ConnectChan <- c.Id
+			c.ConnectChan <- id
 			return
 		}
 	}

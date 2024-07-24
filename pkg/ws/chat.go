@@ -7,7 +7,6 @@ import (
 func (c *Client) ListenMsg() {
 	// Disconnecting client
 	defer func() {
-		c.Conn.Close()
 		c.UnRegister <- true
 	}()
 
@@ -23,6 +22,14 @@ func (c *Client) ListenMsg() {
 			if client, exist := Clients[msg.To]; exist {
 				client.MessageChan <- msg
 			}
+		} else if msg.MessageType == message.SIGNAL {
+			if msg.Category == message.DISCONNECTED_SIGNAL {
+				c.mu.Lock()
+				c.ConnectedUser = ""
+				c.LookingConn = true
+				c.mu.Unlock()
+				Clients[c.ConnectedUser].DisconnectChan <- true
+			}
 		}
 	}
 }
@@ -37,8 +44,30 @@ func (c *Client) WriteMsg() {
 				return
 			}
 		case _ = <-c.UnRegister:
+			if !c.LookingConn {
+				Clients[c.ConnectedUser].DisconnectChan <- true
+			}
+			delete(Clients,c.Id)
 			c.Conn.Close()
 			return
+		case id := <-c.ConnectChan:
+			c.LookingConn = false
+			c.ConnectedUser = id
+			c.mu.Unlock()
+
+			var msg = message.Message{
+				To:          c.Id,
+				MessageType: message.SIGNAL,
+				Category:    message.CONNECTED_SIGNAL,
+				Content:     id,
+			}
+
+			c.Conn.WriteJSON(msg)
+		case _ = <-c.DisconnectChan:
+			c.mu.Lock()
+			c.ConnectedUser = ""
+			c.LookingConn = true
+			c.mu.Unlock()
 		}
 	}
 }
