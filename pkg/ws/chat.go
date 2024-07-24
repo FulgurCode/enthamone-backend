@@ -41,8 +41,9 @@ func (c *Client) WriteMsg() {
 		case msg := <-c.MessageChan:
 			var err = c.Conn.WriteJSON(msg)
 			if err != nil {
-				return
+				continue
 			}
+
 		case _ = <-c.UnRegister:
 			if !c.LookingConn {
 				Clients[c.ConnectedUser].DisconnectChan <- true
@@ -50,6 +51,7 @@ func (c *Client) WriteMsg() {
 			delete(Clients,c.Id)
 			c.Conn.Close()
 			return
+
 		case id := <-c.ConnectChan:
 			c.LookingConn = false
 			c.ConnectedUser = id
@@ -63,11 +65,22 @@ func (c *Client) WriteMsg() {
 			}
 
 			c.Conn.WriteJSON(msg)
+
 		case _ = <-c.DisconnectChan:
 			c.mu.Lock()
 			c.ConnectedUser = ""
 			c.LookingConn = true
 			c.mu.Unlock()
+			var msg = message.Message{
+				To: c.Id,
+				MessageType: message.SIGNAL,
+				Category: message.DISCONNECTED_SIGNAL,
+				Content: "DISCONNECT",
+			}
+			var err =c.Conn.WriteJSON(msg)
+			if err != nil {
+				continue
+			}
 		}
 	}
 }
