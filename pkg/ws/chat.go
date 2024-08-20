@@ -22,14 +22,19 @@ func (c *Client) ListenMsg() {
 			if client, exist := Clients[msg.To]; exist {
 				client.MessageChan <- msg
 			}
+
 		} else if msg.MessageType == message.SIGNAL {
-			if msg.Category == message.DISCONNECTED_SIGNAL {
-				c.mu.Lock()
-				c.ConnectedUser = ""
-				c.LookingConn = true
-				c.mu.Unlock()
+			if msg.Category == message.CONNECT_REQ {
+				c.NewConnection()
+			} else if msg.Category == message.DISCONNECT_REQ {
+				c.DisconnectChan <- true
 				Clients[c.ConnectedUser].DisconnectChan <- true
+			} else if msg.Category == message.ICE_SIGNAL {
+				Clients[msg.To].MessageChan <- msg
 			}
+
+		} else if msg.MessageType == message.OFFER {
+			Clients[msg.To].MessageChan <- msg
 		}
 	}
 }
@@ -48,36 +53,30 @@ func (c *Client) WriteMsg() {
 			if !c.LookingConn {
 				Clients[c.ConnectedUser].DisconnectChan <- true
 			}
-			delete(Clients,c.Id)
+			delete(Clients, c.Id)
 			c.Conn.Close()
 			return
 
 		case id := <-c.ConnectChan:
-			c.LookingConn = false
-			c.ConnectedUser = id
-			c.mu.Unlock()
-
 			var msg = message.Message{
 				To:          c.Id,
 				MessageType: message.SIGNAL,
-				Category:    message.CONNECTED_SIGNAL,
+				Category:    message.CONNECT_SIGNAL,
 				Content:     id,
 			}
 
 			c.Conn.WriteJSON(msg)
 
 		case _ = <-c.DisconnectChan:
-			c.mu.Lock()
-			c.ConnectedUser = ""
-			c.LookingConn = true
-			c.mu.Unlock()
+			c.deleteConnection()
+
 			var msg = message.Message{
-				To: c.Id,
+				To:          c.Id,
 				MessageType: message.SIGNAL,
-				Category: message.DISCONNECTED_SIGNAL,
-				Content: "DISCONNECT",
+				Category:    message.DISCONNECT_SIGNAL,
+				Content:     "DISCONNECT",
 			}
-			var err =c.Conn.WriteJSON(msg)
+			var err = c.Conn.WriteJSON(msg)
 			if err != nil {
 				continue
 			}

@@ -44,12 +44,34 @@ func (c *Client) NewConnection() {
 			continue
 		}
 
-		if client.LookingConn {
-			c.mu.Lock()
-			client.mu.Lock()
-			client.ConnectChan <- c.Id
-			c.ConnectChan <- id
+		client.mu.Lock()
+		c.mu.Lock()
+		if client.LookingConn && c.LookingConn {
+			c.saveConnection(client)
+			c.ConnectChan <- client.Id
 			return
 		}
+		client.mu.Unlock()
+		c.mu.Unlock()
 	}
+}
+
+func (c *Client) saveConnection(client *Client) {
+	c.LookingConn = false
+	c.ConnectedUser = client.Id
+
+	client.LookingConn = false
+	client.ConnectedUser = c.Id
+
+	c.mu.Unlock()
+	client.mu.Unlock()
+}
+
+func (c *Client) deleteConnection() {
+	c.mu.Lock()
+
+	c.LookingConn = true
+	c.ConnectedUser = ""
+
+	c.mu.Unlock()
 }
