@@ -1,4 +1,4 @@
-module github.com/VAISHAKH-GK/atta-backend
+module github.com/VAISHAKH-GK/enthamone-backend
 
 go 1.22.5
 

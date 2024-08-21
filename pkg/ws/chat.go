@@ -1,7 +1,7 @@
 package ws
 
 import (
-	"github.com/VAISHAKH-GK/atta-backend/pkg/message"
+	"github.com/VAISHAKH-GK/enthamone-backend/pkg/message"
 )
 
 func (c *Client) ListenMsg() {

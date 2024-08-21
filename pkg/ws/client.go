@@ -3,7 +3,7 @@ package ws
 import (
 	"sync"
 
-	"github.com/VAISHAKH-GK/atta-backend/pkg/message"
+	"github.com/VAISHAKH-GK/enthamone-backend/pkg/message"
 	"github.com/gofiber/contrib/websocket"
 )
 

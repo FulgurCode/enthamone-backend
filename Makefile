@@ -1,5 +1,5 @@
 build:
-	go build -o ./bin/atta cmd/main.go
+	go build -o ./bin/enthamone cmd/main.go
 
 run: build
-	./bin/atta
+	./bin/enthamone

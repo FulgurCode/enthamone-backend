@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/VAISHAKH-GK/atta-backend/server"
+	"github.com/VAISHAKH-GK/enthamone-backend/server"
 	"github.com/joho/godotenv"
 )
 

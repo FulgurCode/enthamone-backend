@@ -1,8 +1,8 @@
-#+TITLE: Atta
+#+TITLE: Enthamone
 #+AUTHOR: Vaishakh G K
 #+EMAIL: vaishakhgk2006@gmail.com
 
-This is backend for Atta website which is for talking to strangers on the internet.
+This is backend for Enthamone website which is for talking to strangers on the internet.
 
 * Table of Contents :toc:
 - [[#features][Features]]
@@ -56,11 +56,11 @@ Contributions are welcome! To contribute to this project:
 ***** 1. Fork the project
 ***** 2. Clone the fork
 #+begin_src bash
-git clone https://github.com/<username>/atta-backend.git
+git clone https://github.com/<username>/enthamone-backend.git
 #+end_src
 ***** 3. Add Upstream
 #+begin_src bash
-git remote add upstream https://github.com/VAISHAKH-GK/atta-backend
+git remote add upstream https://github.com/VAISHAKH-GK/enthamone-backend
 #+end_src
 ***** 4. Craete a new branch
 #+begin_src bash
