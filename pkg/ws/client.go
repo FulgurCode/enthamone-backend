@@ -54,6 +54,13 @@ func (c *Client) NewConnection() {
 		client.mu.Unlock()
 		c.mu.Unlock()
 	}
+
+	var msg = message.Message{
+		To: c.Id,
+		MessageType: message.SIGNAL,
+		Category: message.CONNECT_FAIL,
+	}
+	c.MessageChan <- msg
 }
 
 func (c *Client) saveConnection(client *Client) {

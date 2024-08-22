@@ -31,6 +31,12 @@ func (c *Client) ListenMsg() {
 				Clients[c.ConnectedUser].DisconnectChan <- true
 			} else if msg.Category == message.ICE_SIGNAL {
 				Clients[msg.To].MessageChan <- msg
+			} else if msg.Category == message.SKIP_REQ {
+				Clients[c.ConnectedUser].DisconnectChan <- true
+				Clients[c.ConnectedUser].NewConnection()
+
+				c.DisconnectChan <- true
+				c.NewConnection()
 			}
 
 		} else if msg.MessageType == message.OFFER {
