@@ -46,6 +46,7 @@ func (c *Client) NewConnection() {
 
 		client.mu.Lock()
 		c.mu.Lock()
+
 		if client.LookingConn && c.LookingConn {
 			c.saveConnection(client)
 			c.ConnectChan <- client.Id
@@ -81,4 +82,5 @@ func (c *Client) deleteConnection() {
 	c.ConnectedUser = ""
 
 	c.mu.Unlock()
+	c.DisconnectChan <- true
 }

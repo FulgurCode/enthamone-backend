@@ -27,15 +27,15 @@ func (c *Client) ListenMsg() {
 			if msg.Category == message.CONNECT_REQ {
 				c.NewConnection()
 			} else if msg.Category == message.DISCONNECT_REQ {
-				c.DisconnectChan <- true
-				Clients[c.ConnectedUser].DisconnectChan <- true
+				c.deleteConnection()
+				Clients[c.ConnectedUser].deleteConnection()
 			} else if msg.Category == message.ICE_SIGNAL {
 				Clients[msg.To].MessageChan <- msg
 			} else if msg.Category == message.SKIP_REQ {
-				Clients[c.ConnectedUser].DisconnectChan <- true
+				Clients[c.ConnectedUser].deleteConnection()
 				Clients[c.ConnectedUser].NewConnection()
 
-				c.DisconnectChan <- true
+				c.deleteConnection()
 				c.NewConnection()
 			}
 
@@ -57,7 +57,7 @@ func (c *Client) WriteMsg() {
 
 		case _ = <-c.UnRegister:
 			if !c.LookingConn {
-				Clients[c.ConnectedUser].DisconnectChan <- true
+				Clients[c.ConnectedUser].deleteConnection()
 			}
 			delete(Clients, c.Id)
 			c.Conn.Close()
@@ -74,8 +74,6 @@ func (c *Client) WriteMsg() {
 			c.Conn.WriteJSON(msg)
 
 		case _ = <-c.DisconnectChan:
-			c.deleteConnection()
-
 			var msg = message.Message{
 				To:          c.Id,
 				MessageType: message.SIGNAL,
