@@ -1,7 +1,7 @@
 package server
 
 import (
-	"github.com/VAISHAKH-GK/enthamone-backend/internal/handlers"
+	"github.com/FulgurCode/enthamone-backend/internal/handlers"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 )

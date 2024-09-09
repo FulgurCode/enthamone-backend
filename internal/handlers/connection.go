@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"github.com/VAISHAKH-GK/enthamone-backend/pkg/message"
-	"github.com/VAISHAKH-GK/enthamone-backend/pkg/ws"
+	"github.com/FulgurCode/enthamone-backend/pkg/message"
+	"github.com/FulgurCode/enthamone-backend/pkg/ws"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/google/uuid"
 )

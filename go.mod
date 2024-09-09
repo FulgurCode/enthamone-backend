@@ -1,4 +1,4 @@
-module github.com/VAISHAKH-GK/enthamone-backend
+module github.com/FulgurCode/enthamone-backend
 
 go 1.22.5
 

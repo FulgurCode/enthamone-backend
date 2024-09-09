@@ -60,7 +60,7 @@ git clone https://github.com/<username>/enthamone-backend.git
 #+end_src
 ***** 3. Add Upstream
 #+begin_src bash
-git remote add upstream https://github.com/VAISHAKH-GK/enthamone-backend
+git remote add upstream https://github.com/FulgurCode/enthamone-backend
 #+end_src
 ***** 4. Craete a new branch
 #+begin_src bash
